@@ -23,7 +23,8 @@ body{
 
 .todo-container_header{
     font-size: 24px;
-    margin-bottom: 16px;
+    margin-bottom: 16render-containerpx;
+
 }
 
 .todo-container_form{
@@ -62,7 +63,7 @@ body{
 
 .render-container_title{
     font-size: 18px;
-    margin-bottom:  10px;
+    margin: 20px 0 ;
     display: flex;
     justify-content: center;
 }

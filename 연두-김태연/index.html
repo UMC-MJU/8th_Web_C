@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UMC-ToDo List</title>
-    <link rel="stylesheet" href="./style.css"/>
-    <script src="module" src="./dist/script.js" defer></script>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./dist/script.js" defer></script>
 </head>
 <body>
     <div class="todo-container">
-        <h1 class = "todo-container_header">TO-DO List</h1>
-        <form id="todo-form" class="todo-container_form"></form>
+        <h1 class="todo-container_header">TO-DO List</h1>
+        <form id="todo-form" class="todo-container_form">
             <input  
                 type="text"
                 id="todo-input"
@@ -28,12 +28,7 @@
 
             <div class="render-container_section">
                 <h2 class="render-container_title">완료</h2>
-                <ul id="todo-list" class="render-container_list">
-                    <li class="render-container_item">
-                        <p class="render-container_item-text">123</p>
-                        <button class="render-container_item-button">삭제</button>
-                    </li>
-                </ul>
+                <ul id="done-list" class="render-container_list"></ul>
             </div>
         </div>   
     </div>
