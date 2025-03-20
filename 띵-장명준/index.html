@@ -3,55 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMUMC Navbar</title>
+    <title>Grid & Flex Layout</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
         }
-        .navbar {
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 110px 1fr 0.5fr 0.5fr 110px;
+            grid-template-areas: 
+                "header menu menu menu"
+                "hero hero hero hero"
+                "main main gap image"
+                "main main gap extra"
+                "banner banner banner banner";
+            height: 100vh;
+        }
+        .header, .menu, .hero, .main, .banner {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        .menu {
-            display: flex;
-            gap: 20px;
+            justify-content: center;
+            color: white;
             font-weight: bold;
-            margin-left: auto;
         }
-        .menu a {
-            text-decoration: none;
+        .header {
+            grid-area: header;
+            background: #131A26;
+        }
+        .menu { grid-area: menu; background: #E84545; }
+        .hero { grid-area: hero; background: #3F88C5; }
+        .main { 
+            grid-area: main; 
+            background: #1C2B3A;
+        }
+
+        .banner { grid-area: banner; background: #F4C542; color: black; }
+        
+        .gap {
+            grid-area: gap;
+            background: white;
+        }
+        .image, .extra {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
             color: black;
         }
-        .icon {
-            font-size: 20px;
-            cursor: pointer;
-            margin-left: 20px;
+        .image {
+            grid-area: image;
+            background: #C7E2E8;
+        }
+        .extra {
+            grid-area: extra;
+            background: #55A489;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <img src="logo.png" alt="SMUMC Logo">
-            <span>SMUMC</span>
-        </div>
-        <div class="menu">
-            <a href="#">PROJECTS</a>
-            <a href="#">MEMBERS</a>
-            <a href="#">NOTICE</a>
-        </div>
-        <div class="icon">☀️</div>
+    <div class="container">
+        <div class="header">HEADER</div>
+        <div class="menu">MENU</div>
+        <div class="hero">HERO</div>
+        <div class="main">MAIN</div>
+        <div class="gap"></div>
+        <div class="image">IMAGE</div>
+        <div class="extra">EXTRA</div>
+        <div class="banner">BANNER</div>
     </div>
-</body>
-</html>
+</
