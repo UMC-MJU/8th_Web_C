@@ -1,6 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
+// Object.defineProperty(exports, "__esModule", { value: true });
+//tsc src/script.ts --outDir dist
 var todoInput = document.getElementById('todo-input');
 var todoForm = document.getElementById('todo-form');
 var todoList = document.getElementById('todo-list');

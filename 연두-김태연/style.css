@@ -22,9 +22,13 @@ body{
 }
 
 .todo-container_header{
-    font-size: 24px;
-    margin-bottom: 16render-containerpx;
+    font-size: 25px;
+    margin-bottom: 16px;
+    font-weight: bold;
+}
 
+.todo-text {
+    color: #28a745; 
 }
 
 .todo-container_form{
@@ -53,7 +57,6 @@ body{
 .todo-container_button:hover{
     background-color: #218838;
 }
-
 
 .render-container{
     display: flex;
