@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid & Flex Layout</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 110px 1fr 0.5fr 0.5fr 110px;
+            grid-template-areas: 
+                "header menu menu menu"
+                "hero hero hero hero"
+                "main main gap image"
+                "main main gap extra"
+                "banner banner banner banner";
+            height: 100vh;
+        }
+        .header, .menu, .hero, .main, .banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .header {
+            grid-area: header;
+            background: #131A26;
+        }
+        .menu { grid-area: menu; background: #E84545; }
+        .hero { grid-area: hero; background: #3F88C5; }
+        .main { 
+            grid-area: main; 
+            background: #1C2B3A;
+        }
+
+        .banner { grid-area: banner; background: #F4C542; color: black; }
+        
+        .gap {
+            grid-area: gap;
+            background: white;
+        }
+        .image, .extra {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: black;
+        }
+        .image {
+            grid-area: image;
+            background: #C7E2E8;
+        }
+        .extra {
+            grid-area: extra;
+            background: #55A489;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">HEADER</div>
+        <div class="menu">MENU</div>
+        <div class="hero">HERO</div>
+        <div class="main">MAIN</div>
+        <div class="gap"></div>
+        <div class="image">IMAGE</div>
+        <div class="extra">EXTRA</div>
+        <div class="banner">BANNER</div>
+    </div>
+</
