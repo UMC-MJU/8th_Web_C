@@ -40,7 +40,7 @@ export const TodoProvider = ({ children }: PropsWithChildren): ReactElement => {
     )
 }
 
-export const useTodo = () => {
+export const useTodo = (): ITodoContext => {
     const context = useContext(TodoContext);
     if (!context) {
         throw new Error('useTodo를 사용하기 위해서는, 무조건 TodoProvider로 감싸야합니다.')
