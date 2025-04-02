@@ -1,4 +1,4 @@
-import { Movie, MovieResponse } from "../types/movie";
+import { TopRate, TopRateResponse } from "../types/toprate";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -6,9 +6,8 @@ import ErrorMessage from "../components/ErrorMessage";
 
 import axios from "axios";
 
-
-const MoviesPage = () => {
-    const [movies, setMovies] = useState<Movie[]>([]);
+const TopRated = () => {
+    const [topRateMovies, setTopRateMovies] = useState<TopRate[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
@@ -19,16 +18,16 @@ const MoviesPage = () => {
             setIsLoading(true);
             setError(null);
             try{
-            const { data } = await axios.get<MovieResponse>(
-                `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${page}`,
+            const { data } = await axios.get<TopRateResponse>(
+                `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${page}`,
                 {
                     headers: {
                         Authorization: ` Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNTZhMGRlMDAwYjljZjgzZTExODBjOTE0N2VjMWM0MSIsIm5iZiI6MTc0MzQ4NDY1OS43MTQsInN1YiI6IjY3ZWI3NmYzNDk3MDA4ODFmY2ZiMGJiMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Sdp9LkTP1w03Jxawg8zS2xuaF-wU7I-hldwz5BqnSjA`,
                     },
                 }
             );
-            setMovies(data.results);
             setTotalPages(data.total_pages);
+            setTopRateMovies(data.results);
         } catch (err) {
             setError('영화 정보 불러오는데 실패');
         } finally {
@@ -50,9 +49,9 @@ const MoviesPage = () => {
     return (
         <div className="p-6">
             {isLoading && <Loader />}
-            {error && <ErrorMessage message={error} />}
+            {error && <ErrorMessage message={error} /> }
             {!isLoading && !error && (
-            <>
+                <>
             <div className="flex justify-center items-center gap-4">
                 <button onClick={handlePrev} disabled={page === 1} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
                     이전
@@ -63,7 +62,7 @@ const MoviesPage = () => {
                 </button>
             </div>
             <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                {movies?.map((movie) => (
+                {topRateMovies?.map((movie) => (
                     <li key={movie.id} className="relative group rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
                         <Link to={`/movies/${movie.id}`}>
                             <img
@@ -85,4 +84,4 @@ const MoviesPage = () => {
     );
 };
 
-export default MoviesPage;
+export default TopRated;
