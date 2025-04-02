@@ -1,12 +1,16 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Navbar() {
-    return (
+  const navigate = useNavigate();
+  
+  return (
       <>
         <div className="flex w-full items-start justify-start space-x-3 text-lg font-medium pl-0">
-            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold">홈</span>
-            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold">인기영화</span>
-            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold">상영 중</span>
-            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold">평점 높은</span>
-            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold">개봉 예정</span>
+            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold cursor-pointer" onClick={() => navigate("/")}>홈</span>
+            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold cursor-pointer" onClick={() => navigate("/movie/MovieUpComig")}>인기영화</span>
+            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold cursor-pointer" onClick={() => navigate("/movie/MovieNowPlaying")}>상영 중</span>
+            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold cursor-pointer" onClick={() => navigate("/movie/MovieTopRated")}>평점 높은</span>
+            <span className="hover:text-[rgb(129,114,207)] transition duration-300 font-bold cursor-pointer"  onClick={() => navigate("/movie/MovieUpComig")}>개봉 예정</span>
         </div>
 
 
