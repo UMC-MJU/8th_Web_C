@@ -6,11 +6,14 @@ import Loading from "../components/Loading";
 
 export default function MoviePage(): JSX.Element {
     const [movies, setMovies] = useState<Movie[]>([]);
-    const [loading, setLoading] = useState(true);
     
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+
     useEffect(() => {
         const fetchMovies = async (): Promise<void> => {
                 setLoading(true);
+                setError(false);
                 await new Promise(resolve => setTimeout(resolve, 100)); 
 
             try {
@@ -28,6 +31,8 @@ export default function MoviePage(): JSX.Element {
                 }
             } catch (error) {
                 console.error("Error fetching movies:", error);
+                setError(true);
+                setLoading(false);
             }
         };
         fetchMovies();
@@ -35,14 +40,16 @@ export default function MoviePage(): JSX.Element {
 
     return (
         <div className="max-w-6xl mx-auto p-5">
-            {loading ? <Loading /> : null} 
+            {loading && <Loading />}
+            {error && <p className="text-red-500 text-center">에러가 발생했습니다.</p>}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {movies.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
-                ))}
-                
-            </div>
+            {!loading && !error && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    {movies.map((movie) => (
+                        <MovieCard key={movie.id} movie={movie} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
