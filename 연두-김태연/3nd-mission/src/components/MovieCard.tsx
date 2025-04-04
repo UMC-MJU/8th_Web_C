@@ -13,7 +13,7 @@ export default function MovieCard({ movie }) {
 
             <div className="
                 absolute top-0 left-0 w-full h-full 
-                bg-black bg-opacity-70 text-white 
+                text-white 
                 hidden group-hover:flex flex-col justify-center items-center 
                 transition-opacity duration-500 ease-in-out 
                 p-5 text-center
