@@ -3,11 +3,14 @@ import axios from "axios";
 import MovieCard from "../components/MovieCard";
 import Movie from "../types/movie";
 import Loading from "../components/Loading";
+import { useSearchParams } from "react-router-dom";
 
 export default function MovieUpComig(): JSX.Element {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get("page")) || 1; // 페이지 전환
 
     useEffect(() => {
         const fetchMovies = async (): Promise<void> => {
@@ -37,7 +40,7 @@ export default function MovieUpComig(): JSX.Element {
             }
         };
         fetchMovies();
-    }, []);
+    }, [page]);
 
     return (
         <div className="max-w-6xl mx-auto p-5">
