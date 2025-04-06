@@ -10,7 +10,7 @@ export default function MovieNowPlaying(): JSX.Element {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [searchParams] = useSearchParams();
-    const page = Number(searchParams.get("page")) || 1; // 페이지 전환
+    const page = Number(searchParams.get("page")) || 1; 
 
     useEffect(() => {
         const fetchMovies = async (): Promise<void> => {

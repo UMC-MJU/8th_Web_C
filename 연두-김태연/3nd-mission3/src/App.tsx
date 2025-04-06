@@ -6,7 +6,7 @@ import MovieTopRated from "./pages/MovieTopRated";
 import MovieUpComig from "./pages/MovieUpComig";
 import MoviePopular from "./pages/MoviePopular";
 import MovieDetail from"./pages/MovieDetail";
-
+import MovieCredit from "./pages/MovieCredit";
 import "./App.css";
 
 function App() {
@@ -19,7 +19,8 @@ function App() {
           <Route path="/movie/MovieTopRated" element={<MovieTopRated />} />
           <Route path="/movie/MovieUpComig" element={<MovieUpComig />} />
           <Route path="/movie/MoviePopular" element={<MoviePopular />} />
-          <Route path="/movie/:movieId" element={<MovieDetail />} />          
+          <Route path="/movie/:movieId" element={<MovieDetail />} />    
+          <Route path="/movie/:movieId" element={<MovieCredit />} />          
         </Route>
       </Routes>
     </Router>
