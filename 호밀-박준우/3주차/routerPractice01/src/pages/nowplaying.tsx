@@ -13,6 +13,8 @@ const NowPlaying = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const token = import.meta.env.VITE_TMDB_API_TOKEN;
+
     useEffect(() => {
         const fetchMovies = async () => {
             setIsLoading(true);
@@ -22,7 +24,7 @@ const NowPlaying = () => {
                     `https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=${page}`,
                     {
                         headers: {
-                            Authorization: ` Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNTZhMGRlMDAwYjljZjgzZTExODBjOTE0N2VjMWM0MSIsIm5iZiI6MTc0MzQ4NDY1OS43MTQsInN1YiI6IjY3ZWI3NmYzNDk3MDA4ODFmY2ZiMGJiMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Sdp9LkTP1w03Jxawg8zS2xuaF-wU7I-hldwz5BqnSjA`,
+                            Authorization: ` Bearer ${token}`,
                         },
                     }
                 );
@@ -36,7 +38,7 @@ const NowPlaying = () => {
         };
 
         fetchMovies();
-    }, [page]);
+    }, [page, token]);
 
     const handlePrev = () => {
         if (page > 1) setPage(page - 1);
@@ -65,7 +67,7 @@ const NowPlaying = () => {
                     <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                         {nowplay?.map((movie) => (
                             <li key={movie.id} className="relative group rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-                                <Link to={`/movies/${movie.id}`}>
+                                <Link to={`/nowplaying/${movie.id}`}>
                                     <img
                                         src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                                         alt={movie.title}

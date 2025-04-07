@@ -10,6 +10,9 @@ import MoviePage from './pages/movie';
 import NowPlaying from './pages/nowplaying';
 import TopRated from './pages/toprated';
 import UpComming from './pages/upcomming';
+import NowPlayingPage from './pages/nowplayinDetail';
+import TopRatedPage from './pages/topratedDetail';
+import UpcommingPage from './pages/upcommingDetail';
 
 const router = createBrowserRouter([
   {
@@ -30,11 +33,20 @@ const router = createBrowserRouter([
         path: 'nowplaying',
         element: <NowPlaying />
       }, {
+        path: 'nowplaying/:id',
+        element: <NowPlayingPage />
+      }, {
         path: 'toprated',
         element: <TopRated />
       }, {
+        path: 'toprated/:id',
+        element: <TopRatedPage />
+      }, {
         path: 'upcomming',
         element: <UpComming />
+      }, {
+        path: 'upcomming/:id',
+        element: <UpcommingPage />
       }    
     ]
   },
