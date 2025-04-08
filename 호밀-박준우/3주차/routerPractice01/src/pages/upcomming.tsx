@@ -1,4 +1,4 @@
-import { Movie, MovieResponse } from "../types/movie";
+import { Upcome, UpcomeResponse } from "../types/upcome";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -6,9 +6,8 @@ import ErrorMessage from "../components/ErrorMessage";
 
 import axios from "axios";
 
-
-const MoviesPage = () => {
-    const [movies, setMovies] = useState<Movie[]>([]);
+const UpComming = () => {
+    const [upCommingMovies, setUpCommingMovies] = useState<Upcome[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,16 +20,16 @@ const MoviesPage = () => {
             setIsLoading(true);
             setError(null);
             try{
-            const { data } = await axios.get<MovieResponse>(
-                `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${page}`,
+            const { data } = await axios.get<UpcomeResponse>(
+                `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=${page}`,
                 {
                     headers: {
                         Authorization: ` Bearer ${token}`,
                     },
                 }
             );
-            setMovies(data.results);
             setTotalPages(data.total_pages);
+            setUpCommingMovies(data.results);
         } catch (err) {
             setError('영화 정보 불러오는데 실패');
         } finally {
@@ -52,9 +51,9 @@ const MoviesPage = () => {
     return (
         <div className="p-6">
             {isLoading && <Loader />}
-            {error && <ErrorMessage message={error} />}
-            {!isLoading && !error && (
-            <>
+            {error && <ErrorMessage message={error}/>}
+            {!isLoading && !error &&(
+                <>
             <div className="flex justify-center items-center gap-4">
                 <button onClick={handlePrev} disabled={page === 1} className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
                     이전
@@ -65,9 +64,9 @@ const MoviesPage = () => {
                 </button>
             </div>
             <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                {movies?.map((movie) => (
+                {upCommingMovies?.map((movie) => (
                     <li key={movie.id} className="relative group rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-                        <Link to={`/movies/${movie.id}`}>
+                        <Link to={`/upcomming/${movie.id}`}>
                             <img
                                 src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                                 alt={movie.title}
@@ -87,4 +86,4 @@ const MoviesPage = () => {
     );
 };
 
-export default MoviesPage;
+export default UpComming;

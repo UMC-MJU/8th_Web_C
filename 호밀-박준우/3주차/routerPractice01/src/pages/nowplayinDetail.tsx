@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Movie } from "../types/movie";
+import { NowPlay } from "../types/nowplay";
 import { useParams } from "react-router-dom";
 import { CreditResponse, Crew, Cast } from "../types/credit";
 import axios from "axios";
 
-const MoviePage= () => {
+const NowplayingPage = () => {
     const { id } = useParams();
-    const [movie, setMovie] = useState<Movie>();
+    const [movie, setMovie] = useState<NowPlay>();
     const [crew, setCrew] = useState<Crew[]>([]);
     const [cast, setCast] = useState<Cast[]>([]);
 
@@ -15,7 +15,7 @@ const MoviePage= () => {
     useEffect(() => {
         const fetchMovie = async () => {
             try {
-                const movieRes = await axios.get<Movie>(
+                const movieRes = await axios.get<NowPlay>(
                     `https://api.themoviedb.org/3/movie/${id}?language=ko-KR`,
                     {
                         headers: {
@@ -94,4 +94,4 @@ const MoviePage= () => {
     );
 };
 
-export default MoviePage;
+export default NowplayingPage;
