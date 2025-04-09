@@ -89,11 +89,13 @@ export default function LoginPage(): JSX.Element {
           id="userpassword"
           required
           {...register("password", {
+            required: "비밀번호는 필수 항목입니다.",
             pattern: {
               value: regExpPw,
               message: "영문과 숫자를 포함해 8자 이상이어야 합니다.",
             },
           })}
+          
         />
         {errors.password && (
           <p className="text-red-600 text-xs">{errors.password.message}</p>
