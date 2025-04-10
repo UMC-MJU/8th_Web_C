@@ -1,18 +1,41 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { CircleUserRound } from "lucide-react";
+import { SignUpAPI } from "../api/SignupAPI";
 
 export default function FinalSignUpPage(): JSX.Element {
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
+  const location = useLocation();
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [nickname, setNickname] = useState("");
+  const email = location.state?.email;
+  const password = location.state?.password;
+  
+  console.log(email);
+  console.log(password);
+  
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (nickname.trim()) {
-      console.log("회원가입 완료:", nickname);
-      navigate("/");
+    if (!nickname.trim()) return;
+  
+    const signupData = {
+      name: nickname,
+      email,
+      password,
+      bio: "임의지정",
+      avatar: "https://postfiles.pstatic.net/MjAyMzAzMDJfMjkw/MDAxNjc3NzIwOTU4MTU1.r86yw28ansOA6ZJB5P4wwynvSkjMNsPZix-vM6MUeHwg.xoiZpXl7aRYCvTfhRMYOcYNy_xbD0lv18FQQ-SUX_44g.JPEG.useop22/IMG_7014.JPG?type=w3840"
+    };
+  
+    try {
+      const res = await SignUpAPI(signupData);
+      console.log("회원가입 성공:", res);
+      navigate("/LoginPage");
+    } catch (err) {
+      console.error("회원가입 실패:", err);
+      alert("회원가입에 실패했어요. 다시 시도해주세요.");
     }
   };
+  
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen gap-y-6">

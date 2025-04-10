@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { SigninAPI } from "../api/SigninAPI";
 
 interface UserValue {
     email: string;
@@ -17,10 +18,12 @@ export default function LoginPage(): JSX.Element {
   const regExpEm =
   /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
   // 비밀번호 조건 8자 이상 및 영문자 + 숫자 -> 미션2
-  const regExpPw = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  // const regExpPw = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const regExpPw = /^.{8,}$/;
 
   const {
     register,
+    handleSubmit,
     watch,
     setValue,
     formState: { errors, isValid },
@@ -28,8 +31,26 @@ export default function LoginPage(): JSX.Element {
     mode: "onChange",
   });
 
+  const onSubmit = async (data: UserValue) => {
+    try {
+      const res = await SigninAPI({ email: data.email, password: data.password });
+      const { accessToken, refreshToken } = res.data;
+  
+      console.log("accessToken:", accessToken);
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+  
+      navigate("/");
+    } catch (err) {
+      console.error("로그인 실패:", err);
+      alert("로그인에 실패했습니다.");
+    }
+  };
+  
+
   return (
     <form
+      onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col justify-center items-center min-h-screen gap-y-6"
     >
       {/* 헤더 */}
@@ -92,7 +113,7 @@ export default function LoginPage(): JSX.Element {
             required: "비밀번호는 필수 항목입니다.",
             pattern: {
               value: regExpPw,
-              message: "영문과 숫자를 포함해 8자 이상이어야 합니다.",
+              message: "비밀번호는 최소 8자 이상이어야 합니다.",
             },
           })}
           

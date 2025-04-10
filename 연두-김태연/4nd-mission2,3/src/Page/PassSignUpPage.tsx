@@ -41,8 +41,13 @@ export default function PassSignUpPage(): JSX.Element {
   const onSubmit = (data: PassFormValue) => {
     if (isValid) {
       console.log("회원가입 데이터:", data);
-      navigate("/FinalSignUpPage");
-    }
+      navigate("/FinalSignUpPage", {
+        state: {
+          email,
+          password: data.Password,
+        },
+      });
+          }
   };
 
   return (
@@ -76,7 +81,7 @@ export default function PassSignUpPage(): JSX.Element {
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
-            className="rounded border border-gray-300 px-4 py-2 text-sm focus:outline-none w-full pr-10"
+            className=" h-9 rounded border border-gray-300 px-4 py-2 text-sm focus:outline-none w-full pr-10"
             placeholder="비밀번호를 입력해주세요"
             {...register("Password")}
           />
@@ -96,7 +101,7 @@ export default function PassSignUpPage(): JSX.Element {
         <div className="relative">
           <input
             type={showCheckPassword ? "text" : "password"}
-            className="rounded border border-gray-300 px-4 py-2 text-sm focus:outline-none w-full pr-10"
+            className=" h-9 rounded border border-gray-300 px-4 py-2 text-sm focus:outline-none w-full pr-10"
             placeholder="비밀번호를 다시 입력해주세요"
             {...register("ConfirmPassword")}
           />
