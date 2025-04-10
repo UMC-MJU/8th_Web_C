@@ -26,7 +26,7 @@ export default function PassSignUpPage(): JSX.Element {
       path: ["ConfirmPassword"],
       message: "비밀번호가 일치하지 않습니다.",
     });
-
+// refine은 단일 필드나 스키마의 특정 값에 대한 검증을 할 때 사용
   type PassFormValue = z.infer<typeof PassSchema>;
 
   const {
@@ -64,7 +64,7 @@ export default function PassSignUpPage(): JSX.Element {
       </div>
 
       {/* 이메일 표시 */}
-      <div className="relative w-full max-w-sm">
+      <div className="relative w-full max-w-sm py-2">
         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
           <Mail size={20} />
         </div>
@@ -78,7 +78,7 @@ export default function PassSignUpPage(): JSX.Element {
         className="flex flex-col w-full max-w-sm gap-y-3"
       >
         {/* 비밀번호 */}
-        <div className="relative">
+        <div className="relative min-h-[60px]">
           <input
             type={showPassword ? "text" : "password"}
             className=" h-9 rounded border border-gray-300 px-4 py-2 text-sm focus:outline-none w-full pr-10"
@@ -88,17 +88,17 @@ export default function PassSignUpPage(): JSX.Element {
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
           >
             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
           {errors.Password && (
-            <p className="text-red-600 text-xs mt-1">{errors.Password.message}</p>
+            <p className="text-red-600 top-full text-xs mt-1">{errors.Password.message}</p>
           )}
         </div>
 
         {/* 비밀번호 확인 */}
-        <div className="relative">
+        <div className="relative min-h-[60px] ">
           <input
             type={showCheckPassword ? "text" : "password"}
             className=" h-9 rounded border border-gray-300 px-4 py-2 text-sm focus:outline-none w-full pr-10"
@@ -108,12 +108,12 @@ export default function PassSignUpPage(): JSX.Element {
           <button
             type="button"
             onClick={() => setShowCheckPassword((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
           >
             {showCheckPassword ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
           {errors.ConfirmPassword && (
-            <p className="text-red-600 text-xs mt-1">{errors.ConfirmPassword.message}</p>
+            <p className="text-red-600 top-full text-xs mt-1">{errors.ConfirmPassword.message}</p>
           )}
         </div>
 
