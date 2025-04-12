@@ -1,8 +1,9 @@
 import useForm from "../hooks/useForm"
 import { userSinginInformation, validateSignin } from "../utils/validate"
+import SocialLoginPage from "./SocialLoginPage"
 
 export default function LoginPage() {
-  const { values, errors, touched, getInputProps} = useForm<userSinginInformation>({
+  const { values, errors, touched, getInputProps } = useForm<userSinginInformation>({
     initialValues: {
       email: "",
       password: ""
@@ -10,12 +11,19 @@ export default function LoginPage() {
     validate: validateSignin,
   })
   const handleSubmit = () => { console.log(values) }
-  
+
   const isDisabled =
     Object.values(errors || {}).some((error) => error.length > 0) ||
     Object.values(values).some((value) => value === "");
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4">
+      <div className="flex mb-5 w-[300px] max-h-[30px]">
+        {/*현재 이전 경로가 아닌 홈 경로임*/}
+        <a href="/" className="text-2xl px-2">&lt;</a>
+        <h1 className="text-2xl text-center font-bold text-black px-21">로그인</h1>
+      </div>
+      <SocialLoginPage />
+      <div className="flex flex-col gap-3"> OR </div>
       <div className="flex flex-col gap-3">
         <input
           {...getInputProps("email")}
