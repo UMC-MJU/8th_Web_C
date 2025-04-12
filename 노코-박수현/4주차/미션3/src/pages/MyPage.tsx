@@ -8,14 +8,11 @@ export default function MyPage() {
     useEffect(() => {
         const getData = async () => {
             const response = await getMyInfo();
-            console.log(response);
-
             setData(response);
         };
 
         getData();
-    }, []);
-    console.log(data?.data?.name);
+    }, [data]);
     return (
         <div>
             {data?.data?.name}

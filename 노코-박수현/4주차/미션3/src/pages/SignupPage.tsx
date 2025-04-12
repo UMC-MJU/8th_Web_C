@@ -2,6 +2,7 @@ import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postSignup } from "../apis/auth";
+import { useNavigate } from "react-router-dom";
 const schema = z.object({
   email: z.string().email({ message: "이메일 형식이 아닙니다." }),
   password: z
@@ -21,7 +22,8 @@ const schema = z.object({
 type FormFilds = z.infer<typeof schema>;
 
 export default function SignupPage() {
-  const { register, handleSubmit, formState: { errors, isSubmitting }
+  const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors, isSubmitting, isValid }
   } = useForm<FormFilds>({
     defaultValues: {
       name: "",
@@ -34,12 +36,15 @@ export default function SignupPage() {
   });
 
   const onSubmit: SubmitHandler<FormFilds> = async (data: FormFilds) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordCheck, ...rest } = data;
-    console.log(rest)
-    const response = await postSignup(rest);
-
-    console.log(response);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { passwordCheck, ...rest } = data;
+      await postSignup(rest);
+      navigate("/login");
+    }
+    catch (error) {
+      alert(error);
+    }
   };
 
   return (
@@ -88,7 +93,7 @@ export default function SignupPage() {
         <button
           type="button"
           onClick={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
+          disabled={!isValid || isSubmitting}
           className="w-full bg-blue-600 text-white py-3 rounded-md text-lg font-large hover:bg-blue-700 transition-colors duration-200 disabled:bg-[#ccc] cursor-pointer disabled:cursor-not-allowed"
         >
           회원가입

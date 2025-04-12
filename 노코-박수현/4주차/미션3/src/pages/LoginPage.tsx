@@ -4,8 +4,10 @@ import { useLocalStorage } from "../hooks/useLocalStorage"
 import { userSinginInformation, validateSignin } from "../utils/validate"
 import SocialLoginPage from "./SocialLoginPage"
 import { LOCAL_STORAGE_KEY } from "../constants/key"
+import { useNavigate } from "react-router-dom"
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const { setItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
   const { values, errors, touched, getInputProps } = useForm<userSinginInformation>({
     initialValues: {
@@ -18,6 +20,8 @@ export default function LoginPage() {
     try {
       const response = await postSignin(values);
       setItem(response.data.accessToken);
+      navigate("/");
+      window.location.reload()
     }
     catch (error) {
       alert(error)
