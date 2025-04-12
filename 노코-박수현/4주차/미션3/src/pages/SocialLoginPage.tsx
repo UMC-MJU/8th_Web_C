@@ -7,7 +7,7 @@ export default function SocialLoginPage() {
                     alt={`구글 이미지`}
                     className="w-[24px] h-[24px] object-cover rounded-xl"
                 />
-                <h3 className="px-15 text-center font-bold">소셜 로그인</h3>
+                <h3 className="px-15 text-center font-bold">구글 로그인</h3>
             </div>
         </>
     )

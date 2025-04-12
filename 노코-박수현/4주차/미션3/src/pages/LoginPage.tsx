@@ -33,13 +33,17 @@ export default function LoginPage() {
     Object.values(values).some((value) => value === "");
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4">
-      <div className="flex mb-5 w-[300px] max-h-[30px]">
-        {/*현재 이전 경로가 아닌 홈 경로임*/}
-        <a href="/" className="text-2xl px-2">&lt;</a>
-        <h1 className="text-2xl text-center font-bold text-black px-21">로그인</h1>
+      <div className="relative flex items-center justify-center mb-5 w-[300px] max-h-[30px]">
+        {/* 홈으로 이동하는 버튼 */}
+        <a href="/" className="absolute left-0 text-2xl px-2">&lt;</a>
+        <h1 className="text-2xl text-center font-bold text-black">로그인</h1>
       </div>
       <SocialLoginPage />
-      <div className="flex flex-col gap-3"> OR </div>
+      <div className="flex items-center w-[300px] gap-2 my-4">
+        <hr className="flex-grow border-t border-gray-800" />
+        <span className="text-gray-800 text-sm px-5">OR</span>
+        <hr className="flex-grow border-t border-gray-800" />
+      </div>
       <div className="flex flex-col gap-3">
         <input
           {...getInputProps("email")}
