@@ -28,10 +28,10 @@ const MyPage = () => {
   //console.log("아바타주소:", data?.data?.avatar);
   return (
     <div className="min-h-screen bg-black text-white p-8 relative">
-      {/* 좌측 상단 로고/타이틀 */}
+      {/* 좌상단 로고고 */}
       <div className="text-pink-400 text-2xl font-bold mb-8">띵페이지</div>
 
-      {/* 유저 정보 박스 */}
+      {/* 정보칸칸 */}
       <div className="flex items-center gap-6 bg-gray-900 p-6 rounded-lg w-fit shadow-lg">
         <img
           src={data?.data.avatar}
@@ -46,7 +46,7 @@ const MyPage = () => {
         </div>
       </div>
 
-      {/* 우측 상단 로그아웃 버튼 */}
+      {/* 우상ㄷ난난 로그아웃 버튼 */}
       <button
         className="absolute top-8 right-8 bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-md"
         onClick={handleLogout}
