@@ -7,7 +7,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 export default function MyPage(): JSX.Element {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-
+  const { logout } = useAuth(); 
   const navigate = useNavigate();
 // 유저 정보 가져오기
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function MyPage(): JSX.Element {
   const DeleteAccount = async() => {
     try{
         await DelAPI();
-        // logout();
+        logout();
         navigate("/");
         alert("회원 탈퇴에 완료했습니다.");
     }catch(error){
