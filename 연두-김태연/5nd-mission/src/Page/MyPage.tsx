@@ -48,7 +48,4 @@ export default function MyPage(): JSX.Element {
     </div>
   );
 }
-function logout() {
-    throw new Error("Function not implemented.");
-}
 

@@ -47,33 +47,33 @@ apiForm.interceptors.request.use(
   },
 );
 
-// //  응답 인터셉터: 401 에러 발생 시 자동 로그아웃
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       // 401 에러 발생 → 로그아웃 처리
-//       console.error("토큰 만료: 자동 로그아웃 처리");
-//       localStorage.removeItem("accessToken");
-//       localStorage.removeItem("refreshToken"); // 혹시 있을 수도 있는 refreshToken도 삭제
-//       alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
-//       window.location.href = "/login"; // 로그인 페이지로 이동
-//     }
-//     return Promise.reject(error);
-//   },
-// );
+//  응답 인터셉터: 401 에러 발생 시 자동 로그아웃
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // 401 에러 발생 → 로그아웃 처리
+      console.error("토큰 만료: 자동 로그아웃 처리");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken"); // 혹시 있을 수도 있는 refreshToken도 삭제
+      alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
+      window.location.href = "/login"; // 로그인 페이지로 이동
+    }
+    return Promise.reject(error);
+  },
+);
 
-// apiForm.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       // 401 에러 발생 → 로그아웃 처리
-//       console.error("토큰 만료: 자동 로그아웃 처리");
-//       localStorage.removeItem("accessToken");
-//       localStorage.removeItem("refreshToken"); // 혹시 있을 수도 있는 refreshToken도 삭제
-//       alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
-//       window.location.href = "/login"; // 로그인 페이지로 이동
-//     }
-//     return Promise.reject(error);
-//   },
-// );
+apiForm.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // 401 에러 발생 → 로그아웃 처리
+      console.error("토큰 만료: 자동 로그아웃 처리");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken"); // 혹시 있을 수도 있는 refreshToken도 삭제
+      alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
+      window.location.href = "/LoginPage"; // 로그인 페이지로 이동
+    }
+    return Promise.reject(error);
+  },
+);
