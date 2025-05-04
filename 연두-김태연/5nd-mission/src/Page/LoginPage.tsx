@@ -1,32 +1,31 @@
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { SigninAPI } from "../api/SigninAPI";
 import { useAuth } from "../context/AuthContext";
 
 interface UserValue {
-    email: string;
-    password: string;
-    nickname: string;
-    passwordConfirm: string;
-    idCheck: boolean;
-    emailCheck: boolean;
-    numberCheck: boolean;
-  }
+  email: string;
+  password: string;
+  nickname: string;
+  passwordConfirm: string;
+  idCheck: boolean;
+  emailCheck: boolean;
+  numberCheck: boolean;
+}
 
 export default function LoginPage(): JSX.Element {
   const navigate = useNavigate();
-  // 이메일 조건 -> 미션2
-  const regExpEm =
-  /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
-  // 비밀번호 조건 8자 이상 및 영문자 + 숫자 -> 미션2
-  // const regExpPw = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-  const regExpPw = /^.{8,}$/;
   const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const regExpEm =
+    /^[A-Za-z0-9_]+[A-Za-z0-9]*[@]{1}[A-Za-z0-9]+[A-Za-z0-9]*[.]{1}[A-Za-z]{1,3}$/;
+  const regExpPw = /^.{8,}$/;
+
   const {
     register,
     handleSubmit,
-    watch,
-    setValue,
     formState: { errors, isValid },
   } = useForm<UserValue>({
     mode: "onChange",
@@ -36,21 +35,31 @@ export default function LoginPage(): JSX.Element {
     try {
       const res = await SigninAPI({ email: data.email, password: data.password });
       const { accessToken, refreshToken } = res.data;
-  
-      console.log("accessToken:", accessToken);
-      // localStorage.setItem("accessToken", accessToken);
+
       localStorage.setItem("refreshToken", refreshToken);
-      // window.dispatchEvent(new Event("storage")); 
-
-      login(accessToken); // Context를 통해 로그인
-
+      login(accessToken);
       navigate("/");
     } catch (err) {
       console.error("로그인 실패:", err);
       alert("로그인에 실패했습니다.");
     }
   };
-  
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("accessToken");
+    const refreshToken = urlParams.get("refreshToken");
+
+    if (accessToken && refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken);
+      login(accessToken);
+      navigate("/");
+    }
+  }, []);
+
+  if (isLoading) {
+    return <p>로그인 중입니다...</p>;
+  }
 
   return (
     <form
@@ -67,10 +76,10 @@ export default function LoginPage(): JSX.Element {
         </p>
         <p className="mx-auto text-sm font-semibold">로그인</p>
       </div>
-
       {/* 구글 로그인 버튼 */}
       <button
         type="button"
+        onClick={() => window.location.href = import.meta.env.VITE_SERVER_API_URL + "/v1/auth/google/login"}
         className="relative flex items-center justify-center px-3 h-10 w-full max-w-sm bg-[#131314] text-[#e3e3e3] text-sm font-roboto font-medium border border-[#8e918f] rounded transition-all duration-200 overflow-hidden hover:shadow-md focus:outline-none"
       >
         <div className="absolute left-3 w-5 h-5 min-w-[20px]">
@@ -106,7 +115,6 @@ export default function LoginPage(): JSX.Element {
           <p className="text-red-600 text-xs">올바른 이메일 형식을 입력해주세요.</p>
         )}
         
-      
         <input
           className="rounded border border-gray-300 px-4 py-2 text-sm focus:outline-none w-full pr-10"
           placeholder="비밀번호를 입력해주세요"
@@ -120,12 +128,10 @@ export default function LoginPage(): JSX.Element {
               message: "비밀번호는 최소 8자 이상이어야 합니다.",
             },
           })}
-          
         />
         {errors.password && (
           <p className="text-red-600 text-xs">{errors.password.message}</p>
         )}
-
       </div>
 
       {/* 로그인 버튼 */}
@@ -138,6 +144,7 @@ export default function LoginPage(): JSX.Element {
       >
         로그인
       </button>
+
     </form>
   );
 }
