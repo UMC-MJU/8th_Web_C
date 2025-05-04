@@ -8,7 +8,7 @@ import useCustomFetch from "../hooks/useCustomFetch";
 
 const UpComming = () => {
     const [page, setPage] = useState(1);
-    const url :string = `https://api.themoviedb.org/3/movie/upcomming?language=en-US&page=${page}`
+    const url :string = `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=${page}`
 
     const {data, isLoading, isError} = useCustomFetch<UpcomeResponse>(url);
     
