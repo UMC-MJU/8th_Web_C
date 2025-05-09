@@ -5,6 +5,7 @@ import PassSignUpPage from './Page/PassSignUpPage';
 import FinalSignUpPage from "./Page/FinalSignUpPage";
 import HomePage from './Page/HomePage';
 import MyPage from "./Page/MyPage";
+import RedirectPage from "./Page/RedirectPage";
 import Layout from "./Layout";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -16,6 +17,7 @@ function App() {
         <Route element={<Layout/>}>
           <Route path="/" element={<HomePage/>}></Route>
           <Route path="/LoginPage" element={<LoginPage/>}></Route>
+          <Route path="/v1/auth/google/callback" element={<RedirectPage />} />
           <Route
             path="/MyPage"
             element={
