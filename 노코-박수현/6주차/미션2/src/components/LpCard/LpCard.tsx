@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { LpData } from "../types/lp";
+import { LpData } from "../../types/lp";
 import { Link } from "react-router-dom";
-
-export default function LpList({ lp }: { lp: LpData }) {
+interface LpListProps {
+    lp: LpData;
+}
+export default function LpCard({ lp }: LpListProps) {
     const [isHover, setIsHover] = useState(false);
-    console.log(lp)
     return (
         <>
-            <div className="group relative overflow-hidden w-100 h-100 transition-transform duration-500 hover:scale-115 hover:z-1"
+            <div className="group relative overflow-hidden w-100 h-100 shadow-lg transition-transform duration-500 hover:scale-115 hover:z-1"
                 onMouseEnter={(): void => setIsHover(true)}
                 onMouseLeave={(): void => setIsHover(false)}
             >
@@ -34,6 +35,7 @@ export default function LpList({ lp }: { lp: LpData }) {
                         <p className="absolute bottom-4 right-4 text-white text-lg drop-shadow-lg">
                             {lp.likes.length}
                         </p>
+
                     </div>
                 )}
 
