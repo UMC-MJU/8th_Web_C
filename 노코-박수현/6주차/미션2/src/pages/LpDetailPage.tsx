@@ -2,16 +2,26 @@ import { useParams } from "react-router-dom";
 import { axiosInstance } from "../apis/axios";
 import { useEffect, useState } from "react";
 import { LpData } from "../types/lp";
-import { LpComment } from "../components/LpReply/LpComment";
+import { LpComment } from "../components/LpComment/LpComment";
 import { PAGENATION_ORDER } from "../enums/common";
 import useGetInfiniteCommentList from "../hooks/queries/useGetInfiniteLpCommentList";
+import { useInView } from "react-intersection-observer";
+import LpCommentSkeletonList from "../components/LpComment/LpCommentSkeletonList";
 
 const LpDetailPage = () => {
     const { lpid } = useParams();
     const [data, setData] = useState<LpData>();
     const [loading, setLoading] = useState(true);
     const [order, setOrder] = useState<PAGENATION_ORDER>(PAGENATION_ORDER.desc);
-    const { data: comments, isFetching, hasNextPage, isPending, isError, fetchNextPage } = useGetInfiniteCommentList(lpid || "", 20, order);
+    const { data: comments, isFetching, hasNextPage, isPending, isError, fetchNextPage } = useGetInfiniteCommentList(lpid || "", 10, order);
+    const { ref, inView } = useInView({
+        threshold: 0,
+    });
+    useEffect(() => {
+        if (inView && !isFetching && hasNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, isFetching, hasNextPage, fetchNextPage]);
     useEffect(() => {
         const fetchLp = async () => {
             try {
@@ -62,8 +72,9 @@ const LpDetailPage = () => {
                     {comments?.pages?.map((page) => page.data.data)
                         ?.flat()
                         ?.map((comment) => <LpComment key={comment.id} comment={comment} />)}
+                    {isFetching && <LpCommentSkeletonList count={10} />}
                 </div>
-
+                <div ref={ref} />
             </div>
 
         </div>
