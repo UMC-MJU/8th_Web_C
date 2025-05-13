@@ -24,4 +24,26 @@ export type LpData = {
     likes: Likes[];
 }
 
+export type author = {
+    id: number;
+    name: string;
+    email: string;
+    bio: null;
+    avatar: null;
+    createdAt: string;
+    updatedAt: string
+}
+
+export type LpCommentData = {
+    id: number;
+    content: string;
+    lpId: number;
+    authorId: number;
+    createdAt: string;
+    updatedAt: string;
+    author: author;
+}
+
 export type ResponseLpListDto = CursorBasedResponse<LpData[]>
+
+export type ResponseLpCommentListDto = CursorBasedResponse<LpCommentData[]>

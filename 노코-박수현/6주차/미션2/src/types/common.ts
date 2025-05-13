@@ -13,9 +13,15 @@ export type CursorBasedResponse<T> = commonResponse<{
     hasNext: boolean;
 }>
 
-export type PaginationDto = {
+export type SearchPaginationDto = {
     cursor?: number;
     limit?: number;
     search?: string;
+    order?: PAGENATION_ORDER;
+}
+
+export type PaginationDto = {
+    cursor?: number;
+    limit?: number;
     order?: PAGENATION_ORDER;
 }
