@@ -29,7 +29,7 @@ export type author = {
     name: string;
     email: string;
     bio: null;
-    avatar: null;
+    avatar: string | null;
     createdAt: string;
     updatedAt: string
 }
