@@ -1,7 +1,6 @@
-import LpList from "../Query/LPList";
 import { useState } from "react";
 
-export default function HomePage(): JSX.Element {
+export default function ArrayBnt(): JSX.Element {
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -44,9 +43,6 @@ export default function HomePage(): JSX.Element {
             </div>
           )}
         </div>
-      </div>
-      <div className="w-full flex justify-center mt-4">
-        <LpList/>
       </div>
     </div>
   );
