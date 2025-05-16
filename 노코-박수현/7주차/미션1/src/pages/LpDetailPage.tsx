@@ -1,51 +1,60 @@
 import { useParams } from "react-router-dom";
-import { axiosInstance } from "../apis/axios";
 import { useEffect, useState } from "react";
-import { LpData } from "../types/lp";
-import { LpComment } from "../components/LpComment/LpComment";
 import { PAGENATION_ORDER } from "../enums/common";
 import useGetInfiniteCommentList from "../hooks/queries/useGetInfiniteLpCommentList";
 import { useInView } from "react-intersection-observer";
 import LpCommentSkeletonList from "../components/LpComment/LpCommentSkeletonList";
-import { Heart } from 'lucide-react';
+import { Heart } from "lucide-react";
+import useGetMyInfo from "../hooks/queries/useGetMyInfo";
+import { useAuth } from "../context/AuthContext";
+import useDeleteLike from "../hooks/mutations/useDeleteLike";
+import usePostLike from "../hooks/mutations/usePostLike";
+import useLpDetail from "../hooks/queries/useLpDetail";
+import { LpComment } from "../components/LpComment/LpComment";
+
 const LpDetailPage = () => {
     const { lpid } = useParams();
-    const [data, setData] = useState<LpData>();
-    const [loading, setLoading] = useState(true);
     const [order, setOrder] = useState<PAGENATION_ORDER>(PAGENATION_ORDER.desc);
-    const { data: comments, isFetching, hasNextPage, isPending, isError, fetchNextPage } = useGetInfiniteCommentList(lpid || "", 10, order);
-    const { ref, inView } = useInView({
-        threshold: 0,
-    });
+    const { ref, inView } = useInView({ threshold: 0 });
+    const { accessToken } = useAuth();
+    const { data: me } = useGetMyInfo(accessToken);
+    const { data, isLoading } = useLpDetail(lpid || "");
+    const {
+        data: comments,
+        isFetching,
+        hasNextPage,
+        fetchNextPage,
+    } = useGetInfiniteCommentList(lpid || "", 10, order);
+
+    const postLikeMutate = usePostLike(lpid || "");
+    const deleteLikeMutate = useDeleteLike(lpid || "");
+
+    const handleLike = () => {
+        postLikeMutate.mutate({ lpId: lpid });
+    };
+
+    const handleDislike = () => {
+        deleteLikeMutate.mutate({ lpId: lpid });
+    };
+
     useEffect(() => {
         if (inView && !isFetching && hasNextPage) {
             fetchNextPage();
         }
     }, [inView, isFetching, hasNextPage, fetchNextPage]);
-    useEffect(() => {
-        const fetchLp = async () => {
-            try {
-                const res = await axiosInstance.get(`/v1/lps/${lpid}`);
-                setData(res.data.data);
-            } catch (error) {
-                console.error("LP 디테일 요청 실패:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        fetchLp();
-    }, [lpid]);
-    console.log(data);
-    if (loading) return <div>Loading...</div>;
+    if (isLoading) return <div>Loading...</div>;
     if (!data) return <div>LP 정보를 불러올 수 없습니다.</div>;
+
+    const isLiked = data.likes.some((like) => like.userId === me?.data.id);
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
             <div className="flex flex-col items-center justify-center w-200 border p-5 bg-gray-200 rounded">
                 <div className="flex flex-col items-center justify-center w-150 h-80 shadow-inner">
                     <div className="relative">
                         <img
-                            src={data?.thumbnail}
+                            src={data.thumbnail}
                             alt={data.title}
                             className="w-64 h-64 object-cover rounded-full shadow-lg animate-spin"
                         />
@@ -53,9 +62,8 @@ const LpDetailPage = () => {
                     </div>
                 </div>
                 <h1 className="font-bold mt-6">{data.content}</h1>
-                {/* 태그 */}
-                <button className="cursor-pointer flex">
-                    <Heart />
+                <button className="cursor-pointer flex" onClick={isLiked ? handleDislike : handleLike}>
+                    <Heart color={isLiked ? "red" : "black"} fill={isLiked ? "red" : "transparent"} />
                     <span className="ml-2 text-sm text-gray-600">{data.likes.length}</span>
                 </button>
             </div>
@@ -72,17 +80,15 @@ const LpDetailPage = () => {
                     </select>
                 </div>
                 <div className="w-full p-1">
-                    {comments?.pages?.map((page) => page.data.data)
-                        ?.flat()
-                        ?.map((comment) => <LpComment key={comment.id} comment={comment} />)}
+                    {comments?.pages?.flatMap((page) =>
+                        page.data.data.map((comment) => <LpComment key={comment.id} comment={comment} />)
+                    )}
                     {isFetching && <LpCommentSkeletonList count={10} />}
                 </div>
                 <div ref={ref} />
             </div>
-
         </div>
     );
-
 };
 
-export default LpDetailPage
+export default LpDetailPage;
