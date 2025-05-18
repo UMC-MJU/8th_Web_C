@@ -76,18 +76,12 @@ export default function LpDetailPage3() {
 
       <p className="mt-4">{lp.content}</p>
 
-      <button
-        onClick={toggleLike}
-        className="mt-4 inline-flex items-center space-x-1"
-      >
+      <button onClick={toggleLike} className="mt-4">
         <Heart
           className="w-6 h-6"
           color={isLiked ? "red" : "white"}
           fill={isLiked ? "red" : "transparent"}
         />
-        <span className="text-lg font-medium text-white">
-          {lp.likes.length}
-        </span>
       </button>
 
       {/* 댓글 섹션 */}

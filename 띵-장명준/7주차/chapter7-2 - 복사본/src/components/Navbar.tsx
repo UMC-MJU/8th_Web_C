@@ -1,11 +1,10 @@
 // src/components/Navbar.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 // (예시) auth 상태를 제공하는 훅
 import { useAuth } from "../context/AuthContext";
-import useGetMyInfo from "../hooks/queries/useGetMyInfo";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEY } from "../constants/key";
+import { getMyInfo } from "../apis/auth";
+import { ResponseMyInfoDto } from "../types/auth";
 
 interface NavbarProps {
   onToggleSidebar: () => void;
@@ -13,25 +12,30 @@ interface NavbarProps {
 
 export default function Navbar({ onToggleSidebar }: NavbarProps) {
   const { logout, accessToken } = useAuth(); // 로그인한 유저 정보와 로그아웃 함수
-  const qc = useQueryClient();
-
-  // ① accessToken이 null(로그아웃) 되면 myInfo 캐시 삭제
-  useEffect(() => {
-    if (!accessToken) {
-      qc.removeQueries({
-        queryKey: [QUERY_KEY.myInfo],
-        exact: true,
-      });
-    }
-  }, [accessToken, qc]);
   // 실제 사용자 정보(payload)만 담을 상태
-  // React-Query 로 사용자 정보 구독
-  const {
-    data: myInfoRes,
-    isLoading: myInfoLoading,
-    error: myInfoError,
-  } = useGetMyInfo(accessToken);
-  const me = myInfoRes?.data;
+  const [myInfo, setMyInfo] = useState<ResponseMyInfoDto["data"] | null>(null);
+
+  useEffect(() => {
+    // 토큰 없으면 비로그인 상태로 초기화하고 getMyInfo 호출 스킵
+    if (!accessToken) {
+      setMyInfo(null);
+      return;
+    }
+
+    // 토큰 있을 때만 내 정보 조회
+    getMyInfo()
+      .then((res) => {
+        if (res.data) {
+          setMyInfo(res.data);
+        } else {
+          setMyInfo(null);
+        }
+      })
+      .catch(() => {
+        // 401 등 에러 시 비로그인 상태로
+        setMyInfo(null);
+      });
+  }, [accessToken]); // accessToken 변경 시 재실행
 
   return (
     <header className="flex items-center bg-gray-900 px-6 py-4 text-white">
@@ -86,12 +90,10 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
           </svg>
         </NavLink>
 
-        {myInfoLoading ? (
-          <span>Loading...</span>
-        ) : me ? (
+        {myInfo ? (
           <>
             {/* 로그인 상태: 인사말 + 로그아웃 */}
-            <span>{me.name}님 반갑습니다.</span>
+            <span>{myInfo.name}님 반갑습니다.</span>
             <button
               onClick={logout}
               className="px-4 py-1 border border-white rounded hover:bg-white hover:text-black transition"
@@ -99,8 +101,6 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
               로그아웃
             </button>
           </>
-        ) : myInfoError ? (
-          <span>사용자 정보를 불러올 수 없습니다.</span>
         ) : (
           <>
             {/* 비로그인 상태: 로그인 + 회원가입 */}
