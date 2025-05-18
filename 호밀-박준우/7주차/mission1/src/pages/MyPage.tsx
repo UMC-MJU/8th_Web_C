@@ -3,8 +3,8 @@ import { getMyInfo } from "../apis/auth";
 import { ResponseMyInfoDto } from "../types/auth";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../apis/axios";
+import { useUpdateNickname } from "../components/UpdateNicknameDto";
 
 const MyPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -16,23 +16,7 @@ const MyPage = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutate: updateProfile } = useMutation({
-    mutationFn: async ({ name, bio, avatar }: { name: string; bio: string; avatar?: string }) => {
-      const payload = {
-        name,
-        bio,
-        ...(avatar && { avatar }),
-      };
-      const res = await axiosInstance.patch("/v1/users", payload);
-      return res.data;
-    },
-    onSuccess: async () => {
-      const refreshed = await getMyInfo();
-      setData(refreshed);
-      alert("프로필이 수정되었습니다.");
-      navigate('/');
-    },
-  });
+  const { mutate: updateNickname } = useUpdateNickname();
 
   useEffect(() => {
     const getData = async () => {
@@ -51,25 +35,25 @@ const MyPage = () => {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const formData = new FormData();
-  formData.append("file", file);
+    const formData = new FormData();
+    formData.append("file", file);
 
-  try {
-    const res = await axiosInstance.post("/v1/uploads/public", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    const imageUrl = res.data.data.imageUrl;
-    setAvatarUrl(imageUrl);
-  } catch (err) {
-    console.error("이미지 업로드 실패", err);
-    alert("이미지를 업로드하지 못했습니다.");
-  }
-};
+    try {
+      const res = await axiosInstance.post("/v1/uploads/public", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const imageUrl = res.data.data.imageUrl;
+      setAvatarUrl(imageUrl);
+    } catch (err) {
+      console.error("이미지 업로드 실패", err);
+      alert("이미지를 업로드하지 못했습니다.");
+    }
+  };
 
   const handleSubmit = async () => {
     if (!name.trim()) {
@@ -77,11 +61,7 @@ const MyPage = () => {
       return;
     }
 
-    updateProfile({
-      name,
-      bio,
-      avatar: avatarUrl || undefined,
-    });
+    updateNickname({ name });
   };
 
   return (

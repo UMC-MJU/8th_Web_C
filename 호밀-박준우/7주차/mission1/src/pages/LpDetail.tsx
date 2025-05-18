@@ -10,11 +10,12 @@ import Comments from "../components/Comment/Comment";
 import { PAGINATION_ORDER } from "../types/common";
 import CommentSkeletonList from "../components/Comment/CommentSkeletonList";
 import useGetMyInfo from "../hooks/queries/useGetMyInfo";
-import usePostLike from "../hooks/mutations/usePostLike";
-import useDeleteLike from "../hooks/mutations/useDeleteLike";
+// import usePostLike from "../hooks/mutations/usePostLike";
+// import useDeleteLike from "../hooks/mutations/useDeleteLike";
 import { useDeleteLp } from "../hooks/mutations/useDeleteLp";
 import { useAuth } from "../context/AuthContext";
 import { useMutation } from "@tanstack/react-query";
+import { useToggleLike } from "../components/useToggleLike";
 
 const LpDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -26,12 +27,11 @@ const LpDetail = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
   const { accessToken } = useAuth();
-
+  
   const { data: me } = useGetMyInfo(accessToken);
-  const { mutate: likeMutate } = usePostLike();
-  const { mutate: disLikeMutate } = useDeleteLike();
   const { mutate: deleteMutate } = useDeleteLp();
  
+  
   //수정 로직
   const { mutate: updateLpMutate } = useMutation({
     mutationFn: async (payload: Partial<Lp>) => {
@@ -64,15 +64,11 @@ const LpDetail = () => {
     }
   };
 
-  // 좋아요 버튼 
-  const handleToggleLike = () => {
-    if (isLiked) {
-      disLikeMutate({ lpId: Number(id) });
-    } else {
-      likeMutate({ lpId: Number(id) });
-    }
-    if (loading) return <div>Loading...</div>;
-  };
+  const { mutate: toggleLike } = useToggleLike(Number(id), isLiked ?? false, me?.data.id);
+
+const handleToggleLike = () => {
+  toggleLike();
+};
 
   // 삭제 버튼
   const handleDelete = () => {
