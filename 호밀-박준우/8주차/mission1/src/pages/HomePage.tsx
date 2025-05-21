@@ -1,0 +1,91 @@
+// src/pages/HomePage.tsx
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
+import { PAGINATION_ORDER } from "../types/common";
+import LpCard from "../components/LpCard/LpCard";
+import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
+import AddLpModal from "./LpModal";
+import useDebounce from "../hooks/useDebounce";
+const HomePage = () => {
+
+  // 검색어, 정렬 상태
+  const [search, setSearch] = useState("");
+  const debouncedValue = useDebounce(search, 300);
+  const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
+  // 무한 스크롤 훅
+  const {
+    data: lpsPages,
+    isFetching,
+    hasNextPage,
+    isPending,
+    fetchNextPage,
+    isError,
+  } = useGetInfiniteLpList(10, debouncedValue, order);
+
+  const { ref, inView } = useInView({ threshold: 0 });
+
+  useEffect(() => {
+    if (inView && !isFetching && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
+
+  if (isError) return <div className="mt-20 text-center">Error...</div>;
+
+  return (
+    <>
+    <div className="container mx-auto px-4 py-6">
+      {/* 검색 input */}
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="검색어를 입력하세요"
+        className="w-full mb-4 p-2 rounded bg-gray-200 text-black"
+      />
+
+      {/* 정렬 버튼 */}
+      <div className="flex justify-end mb-4 space-x-2">
+        <button
+          className={`px-4 py-2 rounded border ${
+            order === "desc"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200 text-black"
+          }`}
+          onClick={() => setOrder(PAGINATION_ORDER.desc)}
+        >
+          최신순
+        </button>
+        <button
+          className={`px-4 py-2 rounded border ${
+            order === "asc"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200 text-black"
+          }`}
+          onClick={() => setOrder(PAGINATION_ORDER.asc)}
+        >
+          오래된순
+        </button>
+      </div>
+
+      {/* LP 카드 그리드 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {isPending && <LpCardSkeletonList count={20} />}
+        {lpsPages?.pages
+          .map((page) => page.data.data)
+          .flat()
+          .map((lp) => (
+            <LpCard key={lp.id} lp={lp} />
+          ))}
+        {isFetching && <LpCardSkeletonList count={20} />}
+      </div>
+
+      <div ref={ref} className="mt-4 text-center" />
+      {/* 더 가져오기 트리거 */}
+    </div>
+    <AddLpModal />
+    </>
+  );
+};
+
+export default HomePage;
