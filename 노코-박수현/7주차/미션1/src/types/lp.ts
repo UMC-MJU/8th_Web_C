@@ -11,7 +11,7 @@ export type Likes = {
     lpId: number;
 }
 
-export type LpData = {
+export type Lp = {
     id: number;
     title: string;
     content: string;
@@ -20,6 +20,9 @@ export type LpData = {
     authorId: number;
     createdAt: string;
     updatedAt: string;
+}
+
+export type LpData = Lp & {
     tags: Tag[];
     likes: Likes[];
 }
@@ -48,6 +51,14 @@ export type RequestLpDto = {
     lpId: string | undefined;
 }
 
+export type RequestAddLpDto = {
+    title: string;
+    content: string;
+    thumbnail: string;
+    tags: string[];
+    published: boolean;
+}
+
 export type ResponseLpListDto = CursorBasedResponse<LpData[]>
 
 export type ResponseLpCommentListDto = CursorBasedResponse<LpCommentData[]>
@@ -57,3 +68,9 @@ export type ResponseLikeLpDto = commonResponse<{
     userId: number;
     lpId: number;
 }>;
+
+export type ResponseImageDto = commonResponse<{
+    imageUrl: string;
+}>;
+
+export type ResponseLpDto = commonResponse<Lp>;

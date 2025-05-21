@@ -15,7 +15,7 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
         <aside
             className={`
         md:static
-        top-0 left-0 h-full w-60 bg-gray-100 shadow-md z-40
+        top-0 left-0 h-full w-60 bg-gray-100 shadow-md z-2
         transform transition-transform duration-300
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0
