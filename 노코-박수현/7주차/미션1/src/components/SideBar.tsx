@@ -11,6 +11,7 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
         navigate(page);
         onClose();
     };
+
     return (
         <aside
             className={`
@@ -26,6 +27,7 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
                 <ul className="space-y-4 text-gray-800">
                     <li className="hover:text-pink-500 cursor-pointer" onClick={handleGoPage("/")}>홈</li>
                     <li className="hover:text-pink-500 cursor-pointer" onClick={handleGoPage("/my")}>마이페이지</li>
+                    <li className="hover:text-pink-500 cursor-pointer" onClick={handleGoPage("/my")}>탈퇴하기</li>
                 </ul>
             </div>
         </aside >
