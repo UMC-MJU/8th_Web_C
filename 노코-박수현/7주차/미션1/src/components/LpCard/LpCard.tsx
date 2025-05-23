@@ -4,35 +4,35 @@ import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import useDeleteLike from "../../hooks/mutations/useDeleteLike";
 import usePostLike from "../../hooks/mutations/usePostLike";
-import { ResponseMyInfoDto } from "../../types/auth";
 import { getMyInfo } from "../../apis/auth";
+import { ResponseMyInfoDto } from "../../types/auth";
 
 interface LpListProps {
     lp: LpData;
 }
 
 export default function LpCard({ lp }: LpListProps) {
-    const [data, setData] = useState<ResponseMyInfoDto | null>(null);
-    const [isHover, setIsHover] = useState(false);
+    const [userId, setUserId] = useState<number | null>(null);
     const [likes, setLikes] = useState(lp.likes);
+    const [isHover, setIsHover] = useState(false);
 
     const { mutate: postLikeMutate } = usePostLike(lp.id.toString());
     const { mutate: deleteLikeMutate } = useDeleteLike(lp.id.toString());
 
-    const isLiked = likes.some((like) => like.userId === data?.data.id);
+    const isLiked = likes.some((like) => like.userId === userId);
 
     const handleLike = () => {
         postLikeMutate(
             { lpId: lp.id.toString() },
             {
                 onSuccess: () => {
-                    if (data?.data?.id !== undefined) {
+                    if (userId !== null) {
                         setLikes((prev) => [
                             ...prev,
                             {
                                 id: Date.now(), // 임시 ID
                                 lpId: lp.id,
-                                userId: data.data.id,
+                                userId,
                             },
                         ]);
                     }
@@ -46,22 +46,26 @@ export default function LpCard({ lp }: LpListProps) {
             { lpId: lp.id.toString() },
             {
                 onSuccess: () => {
-                    setLikes((prev) => prev.filter((like) => like.userId !== data?.data.id));
+                    setLikes((prev) => prev.filter((like) => like.userId !== userId));
                 },
             }
         );
     };
 
     useEffect(() => {
-        const getData = async () => {
+        const fetchUser = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            if (!accessToken) return;
+
             try {
-                const response = await getMyInfo();
-                setData(response);
+                const response: ResponseMyInfoDto = await getMyInfo();
+                setUserId(response.data.id);
             } catch (error) {
-                console.warn("사용자 정보를 불러올 수 없습니다.");
+                console.error("사용자 정보를 불러오지 못했습니다.");
             }
         };
-        getData();
+
+        fetchUser();
     }, []);
 
     return (
