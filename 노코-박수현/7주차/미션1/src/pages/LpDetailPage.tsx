@@ -44,7 +44,7 @@ const LpDetailPage = () => {
         createComment({ content: comment });
         setComment("");
     };
-    
+
     useEffect(() => {
         if (inView && !isFetching && hasNextPage) {
             fetchNextPage();
@@ -88,12 +88,12 @@ const LpDetailPage = () => {
                     </select>
                 </div>
                 <div className="flex">
-                        <input type="text" className="bg-gray-100 w-full border mx-3 rounded" value={comment} onChange={(e) => setComment(e.target.value)} />
-                        <button className="w-10 bg-gray-300 border-gray-500 border rounded mr-2 text-sm" onClick={handleSubmitComment}>작성</button>
-                    </div>
+                    <input type="text" className="bg-gray-100 w-full border mx-3 rounded" value={comment} onChange={(e) => setComment(e.target.value)} />
+                    <button className="w-10 bg-gray-300 border-gray-500 border rounded mr-2 text-sm" onClick={handleSubmitComment}>작성</button>
+                </div>
                 <div className="w-full p-1">
                     {comments?.pages?.flatMap((page) =>
-                        page.data.data.map((comment) => <LpComment key={comment.id} comment={comment} />)
+                        page.data.data.map((comment) => <LpComment key={comment.id} lpid={lpid || ""} order={order} comment={comment} />)
                     )}
                     {isFetching && <LpCommentSkeletonList count={10} />}
                 </div>
