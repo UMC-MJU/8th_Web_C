@@ -7,18 +7,18 @@ function usePostLike(lpId: string) {
   return useMutation({
     mutationFn: postLike,
     onSuccess: () => {
-        queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.lpDetail, lpId],
-            exact: true,
-        });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.lpDetail, lpId],
+        exact: true,
+      });
     },
-    onError: (error, valuables, content) => {},
+    onError: (error, valuables, content) => { },
     onMutate: () => {
       return 'Hello';
-      },
+    },
     onSettled: () => {
       return 'Hello';
-      }
+    }
   });
 }
 
