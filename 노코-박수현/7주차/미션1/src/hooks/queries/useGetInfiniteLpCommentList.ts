@@ -7,10 +7,9 @@ import { ResponseLpCommentListDto } from "../../types/lp";
 function useGetInfiniteCommentList(lpid: string, limit: number, order: PAGENATION_ORDER) {
     return useInfiniteQuery({
         queryFn: ({ pageParam }) => getLpCommentList(lpid, { cursor: pageParam, limit, order }),
-        queryKey: [QUERY_KEY.lps, order],
+        queryKey: [QUERY_KEY.comments, lpid, order],
         initialPageParam: 0,
         getNextPageParam: (lastPage: ResponseLpCommentListDto) => {
-            console.log("lastPage", lastPage);
             return lastPage.data.hasNext ? lastPage.data.nextCursor : undefined;
         },
     });

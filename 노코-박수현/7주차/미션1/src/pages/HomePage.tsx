@@ -6,18 +6,19 @@ import SideBar from "../components/SideBar";
 import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
 import { useInView } from "react-intersection-observer";
 import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
-import { postImage, postLp } from "../apis/lp";
 import LPTag from "../components/LPTag";
+import useUploadImage from "../hooks/mutations/useUploadImage";
+import useCreateLp from "../hooks/mutations/useCreateLp";
+
 export default function HomePage() {
   const { search, isSidebarOpen, setIsSidebarOpen } = useOutletContext<{
     search: string;
     isSidebarOpen: boolean;
     setIsSidebarOpen: (value: boolean) => void;
   }>();
-  
+
   const [order, setOrder] = useState<PAGENATION_ORDER>(PAGENATION_ORDER.desc);
   const [modal, setModal] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState<string>("");
@@ -35,29 +36,22 @@ export default function HomePage() {
 
   const { ref, inView } = useInView({ threshold: 0 });
 
+  const { mutate: uploadImage } = useUploadImage();
+  const { mutate: createLp } = useCreateLp();
+
   const addImageFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImage(file);
+      uploadImage(file, {
+        onSuccess: (res) => {
+          setImageUrl(res.data.imageUrl);
+        },
+        onError: () => {
+          alert("이미지 업로드 실패");
+        },
+      });
     }
   };
-
-  useEffect(() => {
-    if (!image) return;
-
-    const uploadImage = async () => {
-      const formData = new FormData();
-      formData.append("file", image);
-      try {
-        const res = await postImage(formData);
-        setImageUrl(res?.data?.imageUrl); // adjust if shape differs
-      } catch (err) {
-        console.error("이미지 업로드 실패", err);
-      }
-    };
-
-    uploadImage();
-  }, [image]);
 
   useEffect(() => {
     if (inView && !isFetching && hasNextPage) {
@@ -80,32 +74,36 @@ export default function HomePage() {
   const closeModal = () => {
     setModal(false);
     setImageUrl("");
-    setImage(null);
     setTags([]);
     setTagInput("");
+    setLpName("");
+    setLpContent("");
   };
 
-  const handleSubmitLp = async () => {
+  const handleSubmitLp = () => {
     if (!lpName || !lpContent || tags.length === 0 || !imageUrl) {
       alert("모든 값을 입력해주세요.");
       return;
     }
-  
-    try {
-      const response = await postLp({
+
+    createLp(
+      {
         title: lpName,
         content: lpContent,
-        tags: tags,
+        tags,
         thumbnail: imageUrl,
         published: true,
-      });
-      console.log("LP 생성 성공", response);
-      alert("lp 생성 성공")
-      closeModal(); // 모달 닫기
-    } catch (err) {
-      console.error("LP 생성 실패", err);
-      alert("LP 생성에 실패했습니다.");
-    }
+      },
+      {
+        onSuccess: () => {
+          alert("LP 생성 성공");
+          closeModal();
+        },
+        onError: () => {
+          alert("LP 생성 실패");
+        },
+      }
+    );
   };
 
   if (isError) return <div>Error...</div>;
@@ -114,13 +112,11 @@ export default function HomePage() {
     <>
       {search && isPending && <div>Loading...</div>}
 
-      {/* 플로팅 버튼 */}
       <button
         className="fixed bottom-4 right-4 h-20 w-20 rounded-full bg-[#F61C96] z-10 cursor-pointer border border-white"
         onClick={() => setModal(true)}
       />
 
-      {/* 모달 */}
       {modal && (
         <>
           <div
@@ -151,15 +147,14 @@ export default function HomePage() {
                 />
               </label>
 
-              {/* 입력 폼 */}
               <div className="grid grid-rows-3 gap-4 py-10 w-full">
-              <input
+                <input
                   className="border border-gray-300 rounded px-2 py-1"
                   placeholder="LP Name"
                   type="text"
                   value={lpName}
                   onChange={(e) => setLpName(e.target.value)}
-              />
+                />
                 <input
                   className="border border-gray-300 rounded px-2 py-1"
                   placeholder="LP Content"
@@ -186,12 +181,14 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* 태그 리스트 */}
               <div className="flex flex-wrap gap-2">
                 <LPTag contents={tags} onDelete={handleDeleteTag} />
               </div>
 
-              <button className="mt-6 bg-[#FF1E9C] text-white px-6 py-2 rounded-lg shadow-lg" onClick={handleSubmitLp}>
+              <button
+                className="mt-6 bg-[#FF1E9C] text-white px-6 py-2 rounded-lg shadow-lg"
+                onClick={handleSubmitLp}
+              >
                 Add LP
               </button>
             </div>
@@ -199,14 +196,12 @@ export default function HomePage() {
         </>
       )}
 
-      {/* 본문 */}
       <div className="flex h-full">
         <SideBar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
         />
         <div className="w-full p-10">
-          {/* 정렬 셀렉트 */}
           <div className="flex justify-end mb-4">
             <div className="text-sm">
               <label className="text-gray-600 mr-2">정렬:</label>
@@ -223,12 +218,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* LP 카드 리스트 */}
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {lps?.pages
-              ?.flatMap((page) =>
-                page.data.data.map((lp) => <LpList key={lp.id} lp={lp} />)
-              )}
+            {lps?.pages?.flatMap((page) =>
+              page.data.data.map((lp) => <LpList key={lp.id} lp={lp} />)
+            )}
             {isFetching && <LpCardSkeletonList count={20} />}
           </div>
 

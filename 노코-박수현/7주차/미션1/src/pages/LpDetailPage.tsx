@@ -11,6 +11,7 @@ import useDeleteLike from "../hooks/mutations/useDeleteLike";
 import usePostLike from "../hooks/mutations/usePostLike";
 import useLpDetail from "../hooks/queries/useLpDetail";
 import { LpComment } from "../components/LpComment/LpComment";
+import useComment from "../hooks/mutations/useComment";
 
 const LpDetailPage = () => {
     const { lpid } = useParams();
@@ -25,18 +26,25 @@ const LpDetailPage = () => {
         hasNextPage,
         fetchNextPage,
     } = useGetInfiniteCommentList(lpid || "", 10, order);
-
-    const postLikeMutate = usePostLike(lpid || "");
-    const deleteLikeMutate = useDeleteLike(lpid || "");
+    const [comment, setComment] = useState("");
+    const { mutate: postLikeMutate } = usePostLike(lpid || "");
+    const { mutate: deleteLikeMutate } = useDeleteLike(lpid || "");
+    const { mutate: createComment } = useComment(lpid || "", order);
 
     const handleLike = () => {
-        postLikeMutate.mutate({ lpId: lpid });
+        postLikeMutate({ lpId: lpid });
     };
 
     const handleDislike = () => {
-        deleteLikeMutate.mutate({ lpId: lpid });
+        deleteLikeMutate({ lpId: lpid });
     };
 
+    const handleSubmitComment = () => {
+        if (!comment.trim()) return;
+        createComment({ content: comment });
+        setComment("");
+    };
+    
     useEffect(() => {
         if (inView && !isFetching && hasNextPage) {
             fetchNextPage();
@@ -79,6 +87,10 @@ const LpDetailPage = () => {
                         <option value={PAGENATION_ORDER.asc}>오래된순</option>
                     </select>
                 </div>
+                <div className="flex">
+                        <input type="text" className="bg-gray-100 w-full border mx-3 rounded" value={comment} onChange={(e) => setComment(e.target.value)} />
+                        <button className="w-10 bg-gray-300 border-gray-500 border rounded mr-2 text-sm" onClick={handleSubmitComment}>작성</button>
+                    </div>
                 <div className="w-full p-1">
                     {comments?.pages?.flatMap((page) =>
                         page.data.data.map((comment) => <LpComment key={comment.id} comment={comment} />)
