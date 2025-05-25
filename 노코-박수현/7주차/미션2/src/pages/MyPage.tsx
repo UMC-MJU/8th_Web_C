@@ -10,7 +10,7 @@ export default function MyPage() {
 
     const { accessToken } = useAuth();
     const { data: me, isLoading } = useGetMyInfo(accessToken);
-    const { mutate: patchUser } = usePatchUser();
+    const { mutate: patchUser } = usePatchUser({ onOptimisticUpdate: () => setEdit(false) });
     const { mutate: uploadImage } = useUploadImage();
 
     const [edit, setEdit] = useState(false);
@@ -39,9 +39,7 @@ export default function MyPage() {
                     onError: (error) => {
                         console.error("사용자 정보 수정 실패:", error);
                         alert("수정 실패");
-                    },
-                    onSettled: () => {
-                        setEdit(false);
+                        setEdit(true);
                     },
                 }
             );

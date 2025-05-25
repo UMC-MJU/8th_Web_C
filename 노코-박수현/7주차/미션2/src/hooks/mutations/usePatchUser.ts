@@ -4,7 +4,11 @@ import { QUERY_KEY } from "../../constants/key";
 import { RequestUserDto } from "../../types/user";
 import { ResponseMyInfoDto } from "../../types/auth";
 
-const usePatchUser = () => {
+type UsePatchUserOptions = {
+    onOptimisticUpdate?: () => void;
+};
+
+const usePatchUser = ({ onOptimisticUpdate }: UsePatchUserOptions = {}) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -26,8 +30,8 @@ const usePatchUser = () => {
                     avatar: avatar ?? me.data.avatar,
                 },
             };
+            if (onOptimisticUpdate) onOptimisticUpdate();
 
-            console.log(patchMe)
             queryClient.setQueryData([QUERY_KEY.myInfo], patchMe);
 
             return { me, patchMe };
