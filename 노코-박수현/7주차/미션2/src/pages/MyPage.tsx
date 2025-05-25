@@ -1,30 +1,54 @@
 import { useEffect, useRef, useState } from "react";
-import { getMyInfo } from "../apis/auth";
-import { ResponseMyInfoDto } from "../types/auth";
 import usePatchUser from "../hooks/mutations/usePatchUser";
 import useUploadImage from "../hooks/mutations/useUploadImage";
 
+import useGetMyInfo from "../hooks/queries/useGetMyInfo";
+import { useAuth } from "../context/AuthContext";
+
 export default function MyPage() {
-    const [data, setData] = useState<ResponseMyInfoDto | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const { accessToken } = useAuth();
+    const { data: me, isLoading } = useGetMyInfo(accessToken);
+    const { mutate: patchUser } = usePatchUser();
+    const { mutate: uploadImage } = useUploadImage();
+
     const [edit, setEdit] = useState(false);
     const [name, setName] = useState("");
     const [bio, setBio] = useState("");
     const [imageUrl, setImageUrl] = useState("");
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { mutate: patchUser } = usePatchUser(data?.data?.id ?? 0);
-    const { mutate: uploadImage } = useUploadImage();
-
+    // 정보 로드 후 상태 초기화
     useEffect(() => {
-        const getData = async () => {
-            const response = await getMyInfo();
-            setData(response);
-            setName(response.data.name);
-            setBio(response.data.bio ?? "");
-            setImageUrl(response.data.avatar);
-        };
-        getData();
-    }, []);
+        if (me) {
+            setName(me.data.name);
+            setBio(me.data.bio ?? "");
+            setImageUrl(me.data.avatar);
+        }
+    }, [me]);
+
+    const handleEditToggle = () => {
+        if (edit) {
+            patchUser(
+                {
+                    name,
+                    bio,
+                    avatar: imageUrl || me?.data.avatar,
+                },
+                {
+                    onError: (error) => {
+                        console.error("사용자 정보 수정 실패:", error);
+                        alert("수정 실패");
+                    },
+                    onSettled: () => {
+                        setEdit(false);
+                    },
+                }
+            );
+        } else {
+            setEdit(true);
+        }
+    };
 
     const addImageFile = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -44,47 +68,12 @@ export default function MyPage() {
         fileInputRef.current?.click();
     };
 
-    const handleEditToggle = () => {
-        if (edit) {
-            patchUser(
-                {
-                    name,
-                    bio,
-                    avatar: imageUrl || data?.data?.avatar,
-                },
-                {
-                    onSuccess: () => {
-                        setData((prev) =>
-                            prev
-                                ? {
-                                    ...prev,
-                                    data: {
-                                        ...prev.data,
-                                        name,
-                                        bio,
-                                        avatar: imageUrl,
-                                    },
-                                }
-                                : null
-                        );
-                        setEdit(false);
-                    },
-                    onError: (error) => {
-                        console.error("사용자 정보 수정 실패:", error);
-                        alert("수정 실패");
-                    },
-                }
-            );
-        } else {
-            setEdit(true);
-        }
-    };
+    if (isLoading) return <div>Loading...</div>;
 
     return (
         <div className="flex flex-col items-center justify-center h-full gap-4">
             <h1 className="text-4xl font-bold">마이페이지</h1>
 
-            {/* 이미지 클릭 시 업로드 */}
             <img
                 src={imageUrl}
                 alt="avatar"
@@ -109,7 +98,7 @@ export default function MyPage() {
                             onChange={(e) => setName(e.target.value)}
                         />
                     ) : (
-                        <span className="ml-2">{data?.data?.name}</span>
+                        <span className="ml-2">{me?.data.name}</span>
                     )}
                 </h2>
                 <h2 className="text-2xl">
@@ -121,10 +110,10 @@ export default function MyPage() {
                             onChange={(e) => setBio(e.target.value)}
                         />
                     ) : (
-                        <span className="ml-2">{data?.data?.bio}</span>
+                        <span className="ml-2">{me?.data?.bio}</span>
                     )}
                 </h2>
-                <h2 className="text-2xl">이메일: {data?.data?.email}</h2>
+                <h2 className="text-2xl">이메일: {me?.data?.email}</h2>
             </div>
 
             <button

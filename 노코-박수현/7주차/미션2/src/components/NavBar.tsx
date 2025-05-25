@@ -1,8 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from 'react';
-import { getMyInfo } from "../apis/auth";
-import { ResponseMyInfoDto } from "../types/auth";
+import useGetMyInfo from "../hooks/queries/useGetMyInfo";
 
 interface NavBarProps {
     search: string;
@@ -26,16 +25,8 @@ export default function NavBar({
     const { logout, accessToken } = useAuth();
     const [isInputVisible, setIsInputVisible] = useState(false);
     const wrapperRef = useRef(null);
-    const [data, setData] = useState<ResponseMyInfoDto | null>(null);
+    const { data: me } = useGetMyInfo(accessToken);
 
-    useEffect(() => {
-        const getData = async () => {
-            const response = await getMyInfo();
-            setData(response);
-        };
-
-        if (accessToken) getData();
-    }, []);
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (wrapperRef.current && !(wrapperRef.current as HTMLElement).contains(event.target as Node)) {
@@ -74,7 +65,7 @@ export default function NavBar({
                             onClick={() => setIsInputVisible(true)}
                             className="p-2 rounded-full bg-gray-200 hover:bg-gray-300"
                         >
-                            {accessToken ? `🔍 ${data?.data?.name}님 반갑습니다.` : "🔍"}
+                            {accessToken ? `🔍 ${me?.data?.name}님 반갑습니다.` : "🔍"}
                         </button>
                     )}
                 </div>
@@ -96,7 +87,7 @@ export default function NavBar({
             {accessToken && (
                 <>
                     <img
-                        src={data?.data?.avatar}
+                        src={me?.data?.avatar}
                         alt="logo"
                         className="w-10 h-10 rounded-full border-black hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                         onClick={() => navigate("/my")}

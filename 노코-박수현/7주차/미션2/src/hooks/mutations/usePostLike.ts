@@ -42,7 +42,7 @@ function usePostLike() {
       queryClient.setQueryData([QUERY_KEY.lpDetail, newLp.lpId], context?.previousLpPost);
     },
 
-    onSettled: async (data, error, variables, context) => {
+    onSettled: async (_, __, variables) => {
       await queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.lpDetail, variables.lpId],
       })
