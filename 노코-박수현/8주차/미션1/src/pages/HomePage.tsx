@@ -9,6 +9,8 @@ import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
 import LPTag from "../components/LPTag";
 import useUploadImage from "../hooks/mutations/useUploadImage";
 import useCreateLp from "../hooks/mutations/useCreateLp";
+import useDebounce from "../hooks/useDebounce";
+import { SEARCH_DEBOUNCE_DELAY } from "../constants/delay";
 
 export default function HomePage() {
   const { search, isSidebarOpen, setIsSidebarOpen } = useOutletContext<{
@@ -16,7 +18,7 @@ export default function HomePage() {
     isSidebarOpen: boolean;
     setIsSidebarOpen: (value: boolean) => void;
   }>();
-
+  const debouncedValue = useDebounce(search, SEARCH_DEBOUNCE_DELAY);
   const [order, setOrder] = useState<PAGENATION_ORDER>(PAGENATION_ORDER.desc);
   const [modal, setModal] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -32,7 +34,7 @@ export default function HomePage() {
     isPending,
     isError,
     fetchNextPage,
-  } = useGetInfiniteLpList(20, search, order);
+  } = useGetInfiniteLpList(20, debouncedValue, order);
 
   const { ref, inView } = useInView({ threshold: 0 });
 
