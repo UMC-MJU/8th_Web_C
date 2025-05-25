@@ -27,8 +27,8 @@ const LpDetailPage = () => {
         fetchNextPage,
     } = useGetInfiniteCommentList(lpid || "", 10, order);
     const [comment, setComment] = useState("");
-    const { mutate: postLikeMutate } = usePostLike(lpid || "");
-    const { mutate: deleteLikeMutate } = useDeleteLike(lpid || "");
+    const { mutate: postLikeMutate } = usePostLike();
+    const { mutate: deleteLikeMutate } = useDeleteLike();
     const { mutate: createComment } = useComment(lpid || "", order);
 
     const handleLike = () => {
