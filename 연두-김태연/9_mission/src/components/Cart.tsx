@@ -1,16 +1,18 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store/store';
+import { useDispatch } from 'react-redux';
 import { openModal } from '../Slice/modalSlice';
 
 const Cart: React.FC = () => {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div className="w-full flex justify-center">
       <button 
-      className='w-30 bg-slate-900 text-white shadow-md border-2 font-bold rounded-md'
-      onClick={() => dispatch(openModal())}>전체 삭제</button>
+        className="w-full py-2 bg-slate-900 text-white font-semibold rounded-lg hover:bg-slate-800 transition-all duration-200"
+        onClick={() => dispatch(openModal())}
+      >
+        전체 삭제
+      </button>
     </div>
   );
 };

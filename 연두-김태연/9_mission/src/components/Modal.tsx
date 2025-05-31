@@ -1,4 +1,3 @@
-// src/components/Modal.tsx
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '../Slice/cartSlice';
@@ -8,8 +7,8 @@ const Modal: React.FC = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="modal fixed inset-0 flex items-center justify-center z-50">
-            <div className="p-6 rounded-lg shadow-lg w-80">
+    <div className=" modal fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-80">
               <h2 className="text-lg font-bold mb-4 text-center">정말 전체 삭제하시겠습니까?</h2>
               <div className="flex justify-center space-x-4">
                 <button
