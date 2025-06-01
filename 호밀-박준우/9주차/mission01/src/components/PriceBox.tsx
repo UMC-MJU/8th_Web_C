@@ -1,8 +1,7 @@
-import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
+import { useCartStore } from '../store/useCartStore';
 
 const PriceBox = () => {
-  const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
+  const totalPrice = useCartStore((state) => state.totalPrice);
 
   return (
     <div className="p-12 flex justify-end text-xl font-semibold">

@@ -1,9 +1,8 @@
 import { FaShoppingCart } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
+import { useCartStore } from "../store/useCartStore";
 
 const Navbar = () => {
-  const totalAmount = useSelector((state: RootState) => state.cart.totalAmount);
+  const totalAmount = useCartStore((state) => state.totalAmount);
 
   return (
     <div className="flex justify-between items-center p-4 bg-gray-800 text-white">
