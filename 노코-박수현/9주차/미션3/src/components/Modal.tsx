@@ -1,17 +1,17 @@
-import { useDispatch, useSelector } from "../hooks/useCustomRedux"
-import { clearCart } from "../slices/cartSlice";
-import { closeModal } from "../slices/modalSlice";
+import { useCartActions } from "../hooks/useCartStore";
+import { useModalActions, useModalInfo } from "../hooks/useModalStore";
 
 const Modal = () => {
-    const { isModal } = useSelector((state) => state.modal);
-    const dispatch = useDispatch();
+    const { isModal } = useModalInfo();
+    const { clearCart } = useCartActions();
+    const { closeModal } = useModalActions();
 
     const handleCloseModal = () => {
-        dispatch(closeModal());
+        closeModal();
     }
     const handleDeleteCart = () => {
-        dispatch(clearCart());
-        dispatch(closeModal());
+        clearCart();
+        closeModal();
     }
     return (
         <>
