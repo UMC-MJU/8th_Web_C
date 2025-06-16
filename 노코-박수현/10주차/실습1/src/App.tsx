@@ -1,11 +1,12 @@
 import './App.css'
+import UseCallbackPage from './pages/UseCallbackPage'
 
 function App() {
 
   return (
-    <>
-      <h1>Hello React</h1>
-    </>
+    <main className='flex flex-col justify-center items-center h-dvh'>
+      <UseCallbackPage />
+    </main>
   )
 }
 
