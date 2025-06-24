@@ -15,7 +15,7 @@ const MovieList = ({ movies }: MovieListProps): React.ReactElement => {
         )
     }
     return (
-        <div className='gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3'>
+        <div className='gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6'>
             {movies.map((movie): React.ReactElement => (
                 <MovieCard key={movie.id} movie={movie} />
             ))}

@@ -23,6 +23,13 @@ const MovieCard = ({ movie }: MovieCardProps): React.ReactElement => {
                     <span>{movie.vote_average.toFixed(1)}</span>
                 </div>
             </div>
+            <div className='p-4'>
+                <h3 className='mb-2 text-lg font-blod text-gray-800'>{movie.title}</h3>
+                <p className='text-sm text-gray-600'>
+                    {movie.release_date} | {movie.original_language.toUpperCase()}
+                </p>
+                <p className='mt-2 text-sm text-gray-600'>{movie.overview.length > 100 ? `${movie.overview.slice(0, 100)}...` : movie.overview}</p>
+            </div>
         </div>
     )
 }

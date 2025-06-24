@@ -22,7 +22,7 @@ const useFetch = <T>(url: string, options?: AxiosRequestConfig) => {
             }
         };
         fetchData();
-    }, [])
+    }, [url, options]);
     return {
         data,
         error,
